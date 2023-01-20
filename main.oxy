@@ -1,0 +1,48 @@
+class AstNode {
+    fn str(self) Str {
+        return "AstNode";
+    }
+}
+
+class Parser {
+    tokens: List<Token>,
+    fn make (tokens: List<Token>) Parser {
+        return new Parser {
+            tokens: tokens
+        }
+    }
+
+    fn parse (self) AstNode {
+        return new AstNode
+    }
+}
+
+class Token {
+	value: Str
+}
+
+class Lexer {
+	program: Str,
+
+	fn lex (self) List<Token> {
+		return new List<Token> {
+		    head: new Ptr<Token>,
+		    size: 0
+		}
+	}
+}
+
+fn main () {
+	let program = "1";
+
+	let lexer = new Lexer {
+	    program: program
+	};
+
+    let toks = lexer.lex();
+
+    let parser = Parser.make(toks);
+    let ast = parser.parse();
+
+    println(ast.str());
+}

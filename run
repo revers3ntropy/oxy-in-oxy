@@ -1,0 +1,5 @@
+#!/bin/bash
+
+oxy main.oxy
+
+./oxy-out
