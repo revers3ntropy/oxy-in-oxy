@@ -1,0 +1,19 @@
+#include "src/ast.oxy";
+#include "src/parser.oxy";
+#include "src/lexer.oxy";
+#include "src/token.oxy";
+
+fn main () {
+	let program = "1";
+
+	let lexer = new Lexer {
+	    program: program
+	};
+
+    let toks = lexer.lex();
+
+    let parser = Parser.make(toks);
+    let ast = parser.parse();
+
+    println(ast.str());
+}

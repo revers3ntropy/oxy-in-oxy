@@ -1,5 +1,5 @@
 #!/bin/bash
 
-oxy main.oxy
+oxy -k ./src/main.oxy
 
 ./oxy-out

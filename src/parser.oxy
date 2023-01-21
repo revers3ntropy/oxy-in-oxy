@@ -1,0 +1,12 @@
+export class Parser {
+    tokens: List<Token>,
+    fn make (tokens: List<Token>) Parser {
+        return new Parser {
+            tokens: tokens
+        }
+    }
+
+    fn parse (self) AstNode {
+        return new AstNode
+    }
+}

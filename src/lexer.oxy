@@ -1,0 +1,10 @@
+export class Lexer {
+	program: Str,
+
+	fn lex (self) List<Token> {
+		return new List<Token> {
+		    head: new Ptr<Token>,
+		    size: 0
+		}
+	}
+}
