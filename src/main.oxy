@@ -1,19 +1,13 @@
-#include "src/ast.oxy";
-#include "src/parser.oxy";
-#include "src/lexer.oxy";
-#include "src/token.oxy";
+#include "ast.oxy";
+#include "parser.oxy";
+#include "lexer.oxy";
+#include "token.oxy";
 
-fn main () {
-	let program = "1";
+def main () {
+	let program = "1"
 
-	let lexer = new Lexer {
-	    program: program
-	};
-
-    let toks = lexer.lex();
-
-    let parser = Parser.make(toks);
-    let ast = parser.parse();
-
-    println(ast.str());
+    let tokens = Lexer.lex(program)
+    for token in tokens -> print(token.Str())
+    let ast = Parser.parse(tokens)
+    print(ast.Str())
 }

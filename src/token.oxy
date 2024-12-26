@@ -1,3 +1,7 @@
 export class Token {
-	value: Str
+	value: Str,
+
+	def Str (self) Str {
+		return self.value
+	}
 }

@@ -1,12 +1,11 @@
 export class Parser {
     tokens: List<Token>,
-    fn make (tokens: List<Token>) Parser {
-        return new Parser {
-            tokens: tokens
-        }
+
+    def parse (tokens: List<Token>) AstNode {
+        return (new Parser { tokens }).gen_ast()
     }
 
-    fn parse (self) AstNode {
-        return new AstNode
-    }
+    def gen_ast (self) AstNode {
+		return (new AstNode)
+	}
 }

@@ -1,5 +1,5 @@
 export class AstNode {
-    fn str(self) Str {
+    def Str (self) Str {
         return "AstNode";
     }
 }
