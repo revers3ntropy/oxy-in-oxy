@@ -3,9 +3,11 @@ export const TT_EOF = 0
 export class Token {
 	token_type: Int,
 	value: Option<Str>,
-	pos: Interval,
+	loc: Interval,
 
 	def Str (self) ->
-		"Token { token_type: " + self.token_type.Str() + ", value: " + (self.value ?? "None") + ", pos: " + self.pos.start.Str() + " }"
-
+		"Token { token_type: " + self.token_type.Str()
+		+ ", value: " + (self.value ?? "None")
+		+ ", pos: " + self.pos.start.Str()
+		+ " }"
 }

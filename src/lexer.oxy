@@ -1,12 +1,17 @@
 export class Lexer {
 	program: Str,
 	scan_position: Position,
+	current_char: Option<Char>,
+	next_char: Option<Char>,
 
 	def lex (program: Str, file_path: Str) List<Token> {
-		return (new Lexer {
+		let lexer = new Lexer {
 			program,
-			scan_position: new Position { file_path, idx: -1, line: 0, col: -1 }
-	  	}).tokenise()
+			scan_position: new Position { file_path, idx: -1, line: 0, col: -1 },
+			current_char: Option.none!<Char>(),
+			next_char: Option.none!<Char>()
+	  	}
+	  	return lexer.tokenise()
 	}
 
 	def tokenise (self) List<Token> {
@@ -16,11 +21,24 @@ export class Lexer {
 			tokens.push(new Token {
 				token_type: TT_EOF,
 				value: Option.none!<Str>(),
-				pos: Interval.from_position(self.scan_position)
+				loc: Interval.from_position(self.scan_position)
 			})
 			return tokens
 		}
 
 		return tokens
+	}
+
+	def advance (self) {
+		self.scan_position = self.scan_position.advance(self.current_char)
+
+		if self.position.idx >= self.program.len() {
+			self.current_char = Option.none!<Char>()
+			self.next_char = Option.none!<Char>()
+			return Option.none!<Char>()
+		}
+
+		self.current_char = Option.some(self.program.at_raw(self.scan_position.idx))
+		self.next_char = self.program.at(self.scan_position.idx + 1)
 	}
 }

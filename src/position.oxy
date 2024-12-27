@@ -48,5 +48,9 @@ export class Position {
 	}
 
 	def Str (self) ->
-		"Position { file_path: " + self.file_path + ", idx: " + self.idx.Str() + ", line: " + self.line.Str() + ", col: " + self.col.Str() + " }"
+		"Position { file_path: " + self.file_path
+		+ ", idx: " + self.idx.Str()
+		+ ", line: " + self.line.Str()
+		+ ", col: " + self.col.Str()
+		+ " }"
 }
