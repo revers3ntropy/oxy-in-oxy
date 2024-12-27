@@ -1,11 +1,26 @@
 export class Lexer {
 	program: Str,
+	scan_position: Position,
 
-	def lex (program: Str) List<Token> {
-		return (new Lexer { program }).tokenise()
+	def lex (program: Str, file_path: Str) List<Token> {
+		return (new Lexer {
+			program,
+			scan_position: new Position { file_path, idx: -1, line: 0, col: -1 }
+	  	}).tokenise()
 	}
 
 	def tokenise (self) List<Token> {
-		return List.empty!<Token>()
+		let tokens = List.empty!<Token>()
+
+		if self.program.len() < 1 {
+			tokens.push(new Token {
+				token_type: TT_EOF,
+				value: Option.none!<Str>(),
+				pos: Interval.from_position(self.scan_position)
+			})
+			return tokens
+		}
+
+		return tokens
 	}
 }

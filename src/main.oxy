@@ -1,12 +1,13 @@
-#include "ast.oxy";
-#include "parser.oxy";
-#include "lexer.oxy";
-#include "token.oxy";
+#include "ast.oxy"
+#include "parser.oxy"
+#include "lexer.oxy"
+#include "token.oxy"
+#include "position.oxy"
 
 def main () {
 	let program = "1"
 
-    let tokens = Lexer.lex(program)
+    let tokens = Lexer.lex(program, "example.oxy")
     for token in tokens -> print(token.Str())
     let ast = Parser.parse(tokens)
     print(ast.Str())

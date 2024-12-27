@@ -1,7 +1,11 @@
-export class Token {
-	value: Str,
+export const TT_EOF = 0
 
-	def Str (self) Str {
-		return self.value
-	}
+export class Token {
+	token_type: Int,
+	value: Option<Str>,
+	pos: Interval,
+
+	def Str (self) ->
+		"Token { token_type: " + self.token_type.Str() + ", value: " + (self.value ?? "None") + ", pos: " + self.pos.start.Str() + " }"
+
 }

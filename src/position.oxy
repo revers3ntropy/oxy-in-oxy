@@ -1,0 +1,52 @@
+export class Interval {
+	start: Position,
+	end: Position,
+
+	def unknown () -> new Interval {
+		start: Position.unknown(),
+		end: Position.unknown()
+	}
+
+	def from_position (pos: Position) ->
+		new Interval { start: pos, end: pos }
+}
+
+export class Position {
+	file_path: Str,
+	idx: Int,
+	line: Int,
+	col: Int,
+
+	def unknown () ->
+		new Position { file_path: "", idx: -2, line: -2, col: -2 }
+
+	def next(self, current_char: Option<Char>) Position {
+		if current_char.is_some_and(fn (c: Char) -> c == '\n') {
+			return new Position {
+				file_path: self.file_path,
+				idx: self.idx + 1,
+				line: self.line + 1,
+				col: 0
+			}
+		}
+		return new Position {
+			file_path: self.file_path,
+			idx: self.idx + 1,
+			line: self.line,
+			col: self.col + 1
+		}
+	}
+
+	def is_unknown (self) ->
+		self.idx == -2,
+
+	def clone (self) -> new Position {
+		file_path: self.file_path,
+		idx: self.idx,
+		line: self.line,
+		col: self.col
+	}
+
+	def Str (self) ->
+		"Position { file_path: " + self.file_path + ", idx: " + self.idx.Str() + ", line: " + self.line.Str() + ", col: " + self.col.Str() + " }"
+}
