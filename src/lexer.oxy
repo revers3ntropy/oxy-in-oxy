@@ -1,44 +1,77 @@
 export class Lexer {
 	program: Str,
-	scan_position: Position,
+	position: Position,
 	current_char: Option<Char>,
 	next_char: Option<Char>,
 
-	def lex (program: Str, file_path: Str) List<Token> {
+	def lex (program: Str, file_path: Str) Result<List<Token>, OxyError> {
 		let lexer = new Lexer {
 			program,
-			scan_position: new Position { file_path, idx: -1, line: 0, col: -1 },
+			position: new Position { file_path, idx: -1, line: 0, col: -1 },
 			current_char: Option.none!<Char>(),
 			next_char: Option.none!<Char>()
 	  	}
 	  	return lexer.tokenise()
 	}
 
-	def tokenise (self) List<Token> {
+	def tokenise (self) Result<List<Token>, OxyError> {
 		let tokens = List.empty!<Token>()
 
 		if self.program.len() < 1 {
-			tokens.push(new Token {
-				token_type: TT_EOF,
-				value: Option.none!<Str>(),
-				loc: Interval.from_position(self.scan_position)
-			})
-			return tokens
+			return Result.ok!<List<Token>, OxyError>(tokens)
 		}
 
-		return tokens
+		self.advance()
+
+		while self.current_char.is_some {
+			let c = self.current_char.unwrap()
+
+			if c.is_whitespace() {
+				self.advance()
+				continue
+			}
+
+			if c.is_digit() {
+				let start = self.position.clone()
+				let mut end = self.position.clone()
+
+				// build a number while we can
+				let mut number = ""
+				while self.current_char.unwrap().is_digit() {
+					number += self.current_char.unwrap().Str()
+					end = self.position.clone()
+					self.advance()
+					if !self.current_char.is_some {
+						break
+					}
+				}
+				tokens.push(new Token {
+					token_type: TT_INT,
+					value: Option.some!<Str>(number),
+					loc: new Interval { start, end }
+				})
+				continue
+			}
+
+			return Result.err!<List<Token>, OxyError>(OxyError.syntax_err(
+				"unexpected character",
+				Interval.from_pos(self.position.clone())
+			))
+		}
+
+		return Result.ok!<List<Token>, OxyError>(tokens)
 	}
 
 	def advance (self) {
-		self.scan_position = self.scan_position.next(self.current_char)
+		self.position = self.position.next(self.current_char)
 
-		if self.scan_position.idx >= self.program.len() {
+		if self.position.idx >= self.program.len() {
 			self.current_char = Option.none!<Char>()
 			self.next_char = Option.none!<Char>()
 			return
 		}
 
-		self.current_char = Option.some!<Char>(self.program.at_raw(self.scan_position.idx))
-		self.next_char = self.program.at(self.scan_position.idx + 1)
+		self.current_char = Option.some!<Char>(self.program.at_raw(self.position.idx))
+		self.next_char = self.program.at(self.position.idx + 1)
 	}
 }

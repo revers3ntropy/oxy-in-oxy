@@ -1,5 +1,6 @@
 .idea
 
-/oxy-out
+/compiler
 /*.asm
 /*.o
+/test.oxy

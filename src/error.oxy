@@ -1,0 +1,14 @@
+export class OxyError {
+	name: Str,
+	message: Str,
+	loc: Interval,
+
+	def Str (self) ->
+		self.name + ": " + self.message + " @ " + self.loc.start.Str(),
+
+	def syntax_err (message: Str, loc: Interval) -> new OxyError {
+		name: "SyntaxError",
+		message,
+		loc
+	}
+}

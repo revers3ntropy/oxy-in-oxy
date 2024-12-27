@@ -7,7 +7,7 @@ export class Interval {
 		end: Position.unknown()
 	}
 
-	def from_position (pos: Position) ->
+	def from_pos (pos: Position) ->
 		new Interval { start: pos, end: pos }
 }
 
@@ -48,9 +48,8 @@ export class Position {
 	}
 
 	def Str (self) ->
-		"Position { file_path: " + self.file_path
-		+ ", idx: " + self.idx.Str()
-		+ ", line: " + self.line.Str()
-		+ ", col: " + self.col.Str()
-		+ " }"
+		"Position(" + self.file_path
+		+ " " + self.line.Str()
+		+ ":" + self.col.Str()
+		+ ")"
 }

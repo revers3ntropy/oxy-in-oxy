@@ -3,12 +3,38 @@
 #include "lexer.oxy"
 #include "token.oxy"
 #include "position.oxy"
+#include "error.oxy"
 
-def main () {
-	let program = "1"
-
-    let tokens = Lexer.lex(program, "example.oxy")
+def compile (source: Str, path: Str) Result<Str, OxyError> {
+	let lexResult = Lexer.lex(source, path)
+    if !lexResult.ok {
+		return Result.err!<Str, OxyError>(lexResult.error().unwrap())
+    }
+    let tokens = lexResult.unwrap()
+    print("\nTokens:")
     for token in tokens -> print(token.Str())
+
     let ast = Parser.parse(tokens)
+    print("\nAST:")
     print(ast.Str())
+
+    return Result.ok!<Str, OxyError>("Compilation successful")
+}
+
+def main (args: List<Utf8Str>) {
+	if args.len() != 2 {
+		print("Usage: ./compiler <filename>")
+	}
+
+	let path = args.at_raw(1).Str()
+	let file = File.read(path)
+	if !file.is_some {
+		print("Could not open file")
+		return
+	}
+	let source = file.unwrap()
+	let result = compile(source, path)
+	if !result.ok {
+		print(result.error().unwrap().Str())
+	}
 }

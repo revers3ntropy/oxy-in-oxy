@@ -1,5 +1,27 @@
 #!/bin/bash
 
-oxy -k ./src/main.oxy
+{
+    rm ./compiler
+    rm ./compiler.asm
+    rm ./compiler.o
+} 2> /dev/null
 
-./oxy-out
+compilation_args=()
+exec_args=()
+found_dash_dash=false
+for arg in "$@"; do
+    if [ "$found_dash_dash" == "false" ] && [ "$arg" == "--" ]; then
+        found_dash_dash=true
+        continue
+    fi
+
+    if [ "$found_dash_dash" == "false" ]; then
+        compilation_args+=("$arg")
+    else
+        exec_args+=("$arg")
+    fi
+done
+
+oxy -k  -o compiler ./src/main.oxy
+
+./compiler "${compilation_args[@]}"

@@ -1,4 +1,4 @@
-export const TT_EOF = 0
+export const TT_INT = 0
 
 export class Token {
 	token_type: Int,
@@ -6,8 +6,14 @@ export class Token {
 	loc: Interval,
 
 	def Str (self) ->
-		"Token { token_type: " + self.token_type.Str()
+		"Token { token_type: " + Token.stringify_token_type(self.token_type)
 		+ ", value: " + (self.value ?? "None")
 		+ ", pos: " + self.loc.start.Str()
-		+ " }"
+		+ " }",
+
+	def stringify_token_type(token_type: Int) Str {
+		if token_type == TT_INT -> return "INT"
+		panic("Unknown token type")
+		return ""
+	}
 }
