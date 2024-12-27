@@ -8,6 +8,6 @@ export class Token {
 	def Str (self) ->
 		"Token { token_type: " + self.token_type.Str()
 		+ ", value: " + (self.value ?? "None")
-		+ ", pos: " + self.pos.start.Str()
+		+ ", pos: " + self.loc.start.Str()
 		+ " }"
 }

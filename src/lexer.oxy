@@ -30,15 +30,15 @@ export class Lexer {
 	}
 
 	def advance (self) {
-		self.scan_position = self.scan_position.advance(self.current_char)
+		self.scan_position = self.scan_position.next(self.current_char)
 
-		if self.position.idx >= self.program.len() {
+		if self.scan_position.idx >= self.program.len() {
 			self.current_char = Option.none!<Char>()
 			self.next_char = Option.none!<Char>()
-			return Option.none!<Char>()
+			return
 		}
 
-		self.current_char = Option.some(self.program.at_raw(self.scan_position.idx))
+		self.current_char = Option.some!<Char>(self.program.at_raw(self.scan_position.idx))
 		self.next_char = self.program.at(self.scan_position.idx + 1)
 	}
 }
