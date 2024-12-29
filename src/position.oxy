@@ -9,6 +9,9 @@ export class Interval {
 
 	def from_pos (pos: Position) ->
 		new Interval { start: pos, end: pos }
+
+	def Str (self) ->
+		"Interval(" + self.start.Str() + " -> " + self.end.Str() + ")"
 }
 
 export class Position {

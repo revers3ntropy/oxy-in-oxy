@@ -1,5 +1,10 @@
-export class AstNode {
-    def Str (self) Str {
-        return "AstNode"
-    }
+export class IntNode {
+	value: Int,
+	loc: Interval,
+
+	def gen_llvmir(self) Result<Str, OxyError> ->
+		Result.ok!<Str, OxyError>("i64 "+ self.value.Str()),
+
+	def Str(self) ->
+	 	"IntNode { value: " + self.value.Str() + ", loc: " + self.loc.Str() + " }"
 }

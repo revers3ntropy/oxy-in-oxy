@@ -6,19 +6,32 @@
 #include "error.oxy"
 
 def compile (source: Str, path: Str) Result<Str, OxyError> {
-	let lexResult = Lexer.lex(source, path)
-    if !lexResult.ok {
-		return Result.err!<Str, OxyError>(lexResult.error().unwrap())
+	let lex_result = Lexer.lex(source, path)
+    if !lex_result.ok {
+		return Result.err!<Str, OxyError>(lex_result.error().unwrap())
     }
-    let tokens = lexResult.unwrap()
+    let tokens = lex_result.unwrap()
     print("\nTokens:")
     for token in tokens -> print(token.Str())
 
-    let ast = Parser.parse(tokens)
+    let parse_result = Parser.parse(tokens)
+	if !parse_result.ok {
+		return Result.err!<Str, OxyError>(parse_result.error().unwrap())
+	}
+	let ast = parse_result.unwrap()
     print("\nAST:")
     print(ast.Str())
 
-    return Result.ok!<Str, OxyError>("Compilation successful")
+    let gen_ir_result = ast.gen_llvmir()
+    if !gen_ir_result.ok {
+    		return Result.err!<Str, OxyError>(gen_ir_result.error().unwrap())
+	}
+	let llvmir = gen_ir_result.unwrap()
+
+	print("\nLLVM IR:")
+	print(llvmir)
+
+    return Result.ok!<Str, OxyError>(llvmir)
 }
 
 def main (args: List<Utf8Str>) {
@@ -36,5 +49,16 @@ def main (args: List<Utf8Str>) {
 	let result = compile(source, path)
 	if !result.ok {
 		print(result.error().unwrap().Str())
+		return
 	}
+
+	let output_path = path + ".ll"
+	let output_file = File.open(output_path, "w")
+	if !output_file.is_some {
+		print("Could not create output file")
+		return
+	}
+	let output = output_file.unwrap()
+	output.write(result.unwrap())
+	output.close()
 }

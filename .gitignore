@@ -3,4 +3,5 @@
 /compiler
 /*.asm
 /*.o
+/*.ll
 /test.oxy
