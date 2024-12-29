@@ -1,13 +1,13 @@
 export class Parser {
     tokens: List<Token>,
 
-    def parse (tokens: List<Token>) Result<IntNode, OxyError> {
+    def parse (tokens: List<Token>) Result<AstNode, OxyError> {
         return (new Parser { tokens }).gen_ast()
     }
 
-    def gen_ast (self) Result<IntNode, OxyError> {
+    def gen_ast (self) Result<AstNode, OxyError> {
     	if self.tokens.len() != 1 {
-    		return Result.err!<IntNode, OxyError>(OxyError.syntax_err(
+    		return Result.err!<AstNode, OxyError>(OxyError.syntax_err(
 				"Expected exactly one token",
 				Interval.unknown()
 			))
@@ -16,9 +16,9 @@ export class Parser {
 		if token.token_type != TT_INT {
 			panic("Expected integer token")
 		}
-		return Result.ok!<IntNode, OxyError>(new IntNode {
-			value: token.value.unwrap().Int().unwrap(),
-			loc: token.loc
-	 	})
+		return Result.ok!<AstNode, OxyError>(IntNode.make(
+			token.value.unwrap().Int().unwrap(),
+			token.loc
+	 	))
 	}
 }

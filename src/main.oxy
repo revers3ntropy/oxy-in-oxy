@@ -1,9 +1,10 @@
-#include "ast.oxy"
 #include "parser.oxy"
 #include "lexer.oxy"
 #include "token.oxy"
 #include "position.oxy"
 #include "error.oxy"
+#include "ast/ast_node.oxy"
+#include "ast/int_node.oxy"
 
 def compile (source: Str, path: Str) Result<Str, OxyError> {
 	let lex_result = Lexer.lex(source, path)

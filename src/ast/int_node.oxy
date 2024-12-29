@@ -1,6 +1,11 @@
+const NID_INT = 0
+
 export class IntNode {
 	value: Int,
 	loc: Interval,
+
+	def make(value: Int, loc: Interval) ->
+		AstNode.from_node!<IntNode>(NID_INT, new IntNode { value, loc }),
 
 	def gen_llvmir(self) Result<Str, OxyError> ->
 		Result.ok!<Str, OxyError>("i64 "+ self.value.Str()),
