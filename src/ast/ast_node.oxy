@@ -7,18 +7,26 @@ export class AstNode {
 		id
 	},
 
+	def setup(self) Result<Void, OxyError> {
+		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).setup()
+		panic("Unknown node ID: " + self.id.Str())
+		return Result.ok!<Void, OxyError>(new Void)
+	}
+
+	def type_check(self) Result<OxyType, OxyError> {
+		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).type_check()
+		panic("Unknown node ID: " + self.id.Str())
+		return Result.ok!<OxyType, OxyError>(new OxyType)
+	}
+
 	def gen_llvmir(self) Result<Str, OxyError> {
-		if self.id == NID_INT {
-			return #unchecked_cast(IntNode, self.node).gen_llvmir()
-		}
+		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).gen_llvmir()
 		panic("Unknown node ID: " + self.id.Str())
 		return Result.ok!<Str, OxyError>("")
 	}
 
 	def Str (self) Str {
-		if self.id == NID_INT {
-			return #unchecked_cast(IntNode, self.node).Str()
-		}
+		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).Str()
 		panic("Unknown node ID: " + self.id.Str())
 		return ""
 	}

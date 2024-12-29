@@ -7,6 +7,12 @@ export class IntNode {
 	def make(value: Int, loc: Interval) ->
 		AstNode.from_node!<IntNode>(NID_INT, new IntNode { value, loc }),
 
+	def setup (self) Result<Void, OxyError> ->
+		Result.ok!<Void, OxyError>(new Void),
+
+	def type_check(self) Result<OxyType, OxyError> ->
+		Result.ok!<OxyType, OxyError>(new OxyType),
+
 	def gen_llvmir(self) Result<Str, OxyError> ->
 		Result.ok!<Str, OxyError>("i64 "+ self.value.Str()),
 

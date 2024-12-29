@@ -4,4 +4,5 @@
 /*.asm
 /*.o
 /*.ll
+/*.out
 /test.oxy

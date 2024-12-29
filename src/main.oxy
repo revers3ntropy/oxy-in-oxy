@@ -3,6 +3,7 @@
 #include "token.oxy"
 #include "position.oxy"
 #include "error.oxy"
+#include "types.oxy"
 #include "ast/ast_node.oxy"
 #include "ast/int_node.oxy"
 

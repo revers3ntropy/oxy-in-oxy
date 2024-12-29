@@ -6,22 +6,8 @@
     rm ./compiler.o
 } 2> /dev/null
 
-compilation_args=()
-exec_args=()
-found_dash_dash=false
-for arg in "$@"; do
-    if [ "$found_dash_dash" == "false" ] && [ "$arg" == "--" ]; then
-        found_dash_dash=true
-        continue
-    fi
-
-    if [ "$found_dash_dash" == "false" ]; then
-        compilation_args+=("$arg")
-    else
-        exec_args+=("$arg")
-    fi
-done
-
-oxy -k  -o compiler ./src/main.oxy
-
-./compiler "${compilation_args[@]}"
+oxy -o compiler ./src/main.oxy
+./compiler "$1.oxy"
+echo ''
+clang "$1.oxy.ll" -o "$1" || exit 1
+./$1
