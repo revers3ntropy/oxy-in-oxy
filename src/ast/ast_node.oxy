@@ -1,30 +1,58 @@
+// Mimic an abstract class by holding a pointer to an object of unknown type,
+// and an id to tell us what type the object is.
+// Ideally we would have `export interface AstNode` and use `dyn AstNode`
+// or equivalent but Oxynium does not support interfaces, enums, traits,
+// dynamic dispatch or any other form of polymorphism (yet).
 export class AstNode {
 	id: Int,
 	node: Ptr<Void>,
 
+	/// ID must always be the corresponding type ID for the node
 	def from_node<T>(id: Int, node: T) -> new AstNode {
+		// this is the unsafe action - pretending we know what type 'T' is
+		// when the caller could chose an 'id' unrelated to the type of 'node'
 		node: #unchecked_cast(Ptr<Void>, node),
 		id
 	},
 
+	/// This is the first pass of the middle-end of the Oxynium compiler.
+	/// It is responsible for initialising AST nodes and declaring symbols.
+	/// Errors propagated up at this stage are likely to be syntax errors,
+	/// such as variables with invalid identifiers.
 	def setup(self) Result<Void, OxyError> {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).setup()
+		// if an unknown ID is passed, we panic - ideally the type system would ensure
+		// that this is unreachable
 		panic("Unknown node ID: " + self.id.Str())
 		return Result.ok!<Void, OxyError>(new Void)
 	}
 
+	/// This is the second pass on the AST. Types are checked and inferred.
+	/// 'self' should be taken to be immutable, and nothing should be declared
+	/// or defined.
+	/// The 'type' of the node should be returned, and Void used as a placeholder
+	/// for nodes which cannot be used as values, for example a while loop.
+	/// Errors from this stage are likely type errors, for example mismatched types
+	/// in an expression or references to undeclared variables.
 	def type_check(self) Result<OxyType, OxyError> {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).type_check()
 		panic("Unknown node ID: " + self.id.Str())
 		return Result.ok!<OxyType, OxyError>(new OxyType)
 	}
 
+	/// This is the final pass of the middle-end of the Oxynium compiler.
+	/// It is responsible for generating LLVM Intermediate Representation (IR).
+	/// This will be the final output of the Oxynium compiler, a string which can
+	/// be optimised and assembled by LLVM.
+	/// Errors from this stage are rare. One example might be when a return statement
+	/// is found outside the body of a function definition.
 	def gen_llvmir(self) Result<Str, OxyError> {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).gen_llvmir()
 		panic("Unknown node ID: " + self.id.Str())
 		return Result.ok!<Str, OxyError>("")
 	}
 
+	/// Debug format the node for logging.
 	def Str (self) Str {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).Str()
 		panic("Unknown node ID: " + self.id.Str())
