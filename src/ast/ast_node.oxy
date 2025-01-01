@@ -21,6 +21,8 @@ export class AstNode {
 	/// such as variables with invalid identifiers.
 	def setup(self) Result<Void, OxyError> {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).setup()
+		if self.id == NID_STATEMENTS -> return #unchecked_cast(StatementsNode, self.node).setup()
+
 		// if an unknown ID is passed, we panic - ideally the type system would ensure
 		// that this is unreachable
 		panic("Unknown node ID: " + self.id.Str())
@@ -36,6 +38,8 @@ export class AstNode {
 	/// in an expression or references to undeclared variables.
 	def type_check(self) Result<OxyType, OxyError> {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).type_check()
+		if self.id == NID_STATEMENTS -> return #unchecked_cast(StatementsNode, self.node).type_check()
+
 		panic("Unknown node ID: " + self.id.Str())
 		return Result.ok!<OxyType, OxyError>(new OxyType)
 	}
@@ -48,6 +52,8 @@ export class AstNode {
 	/// is found outside the body of a function definition.
 	def gen_llvmir(self) Result<Str, OxyError> {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).gen_llvmir()
+		if self.id == NID_STATEMENTS -> return #unchecked_cast(StatementsNode, self.node).gen_llvmir()
+
 		panic("Unknown node ID: " + self.id.Str())
 		return Result.ok!<Str, OxyError>("")
 	}
@@ -55,6 +61,8 @@ export class AstNode {
 	/// Debug format the node for logging.
 	def Str (self) Str {
 		if self.id == NID_INT -> return #unchecked_cast(IntNode, self.node).Str()
+		if self.id == NID_STATEMENTS -> return #unchecked_cast(StatementsNode, self.node).Str()
+
 		panic("Unknown node ID: " + self.id.Str())
 		return ""
 	}

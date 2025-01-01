@@ -4,6 +4,8 @@
     rm ./compiler
     rm ./compiler.asm
     rm ./compiler.o
+    rm ./test.oxy.ll
+    rm ./a.out
 } 2> /dev/null
 
 oxy -o compiler ./src/main.oxy

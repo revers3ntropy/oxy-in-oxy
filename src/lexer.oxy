@@ -25,6 +25,7 @@ export class Lexer {
 
 		while self.current_char.is_some {
 			let c = self.current_char.unwrap()
+			let start = self.position.clone()
 
 			if c.is_whitespace() {
 				self.advance()
@@ -32,23 +33,38 @@ export class Lexer {
 			}
 
 			if c.is_digit() {
-				let start = self.position.clone()
-				let mut end = self.position.clone()
-
 				// build a number while we can
 				let mut number = ""
 				while self.current_char.unwrap().is_digit() {
 					number += self.current_char.unwrap().Str()
-					end = self.position.clone()
 					self.advance()
-					if !self.current_char.is_some {
+					if !self.current_char.is_some ->
 						break
-					}
 				}
 				tokens.push(new Token {
 					token_type: TT_INT,
 					value: Option.some!<Str>(number),
-					loc: new Interval { start, end }
+					loc: new Interval { start, end: self.position.clone() }
+				})
+				continue
+			}
+
+			if c.is_alphabetic() || c == '_' {
+				// build a word while we can
+				let mut word = ""
+				while
+					self.current_char.unwrap().is_alphanumeric()
+				    || self.current_char.unwrap() == '_'
+				{
+					word += self.current_char.unwrap().Str()
+					self.advance()
+					if !self.current_char.is_some ->
+						break
+				}
+				tokens.push(new Token {
+					token_type: TT_ID,
+					value: Option.some!<Str>(word),
+					loc: new Interval { start, end: self.position.clone() }
 				})
 				continue
 			}

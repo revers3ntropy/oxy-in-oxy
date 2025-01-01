@@ -1,0 +1,40 @@
+const NID_STATEMENTS = 1
+
+export class StatementsNode {
+	statements: List<AstNode>,
+
+	def make(statements: List<AstNode>) AstNode ->
+		AstNode.from_node!<StatementsNode>(NID_STATEMENTS, new StatementsNode { statements }),
+
+	def setup(self) Result<Void, OxyError> {
+		for statement in self.statements {
+			let result = statement.setup()
+			if !result.ok ->
+				return Result.err!<Void, OxyError>(result.error().unwrap())
+		}
+		return Result.ok!<Void, OxyError>(new Void)
+	}
+
+	def type_check(self) Result<OxyType, OxyError> {
+		for statement in self.statements {
+			let result = statement.type_check()
+			if !result.ok ->
+				return Result.err!<OxyType, OxyError>(result.error().unwrap())
+		}
+		return Result.ok!<OxyType, OxyError>(new OxyType)
+	}
+
+	def gen_llvmir(self) Result<Str, OxyError> {
+		let mut asm = ""
+		for statement in self.statements {
+			let result = statement.gen_llvmir()
+			if !result.ok ->
+				return Result.err!<Str, OxyError>(result.error().unwrap())
+			asm += result.unwrap() + "\n"
+		}
+		return Result.ok!<Str, OxyError>(asm)
+	}
+
+	def Str(self) ->
+	 	"StatementsNode { statements: " + self.statements.Str() + " }"
+}

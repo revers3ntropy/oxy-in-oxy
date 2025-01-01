@@ -4,10 +4,10 @@ export class IntNode {
 	value: Int,
 	loc: Interval,
 
-	def make(value: Int, loc: Interval) ->
+	def make(value: Int, loc: Interval) AstNode ->
 		AstNode.from_node!<IntNode>(NID_INT, new IntNode { value, loc }),
 
-	def setup (self) Result<Void, OxyError> ->
+	def setup(self) Result<Void, OxyError> ->
 		Result.ok!<Void, OxyError>(new Void),
 
 	def type_check(self) Result<OxyType, OxyError> ->

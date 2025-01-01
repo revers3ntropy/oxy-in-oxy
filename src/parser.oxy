@@ -6,19 +6,22 @@ export class Parser {
     }
 
     def gen_ast (self) Result<AstNode, OxyError> {
-    	if self.tokens.len() != 1 {
-    		return Result.err!<AstNode, OxyError>(OxyError.syntax_err(
-				"Expected exactly one token",
-				Interval.unknown()
-			))
+		let statements = List.empty!<AstNode>()
+    	for token in self.tokens {
+			if token.token_type == TT_INT {
+				statements.push(IntNode.make(
+					token.value.unwrap().Int().unwrap(),
+					token.loc
+				))
+			} else {
+				return Result.err!<AstNode, OxyError>(
+					OxyError.syntax_err("unexpected token", token.loc)
+				)
+			}
     	}
-    	let token = self.tokens.at_raw(0)
-		if token.token_type != TT_INT {
-			panic("Expected integer token")
-		}
-		return Result.ok!<AstNode, OxyError>(IntNode.make(
-			token.value.unwrap().Int().unwrap(),
-			token.loc
-	 	))
+
+		return Result.ok!<AstNode, OxyError>(
+			StatementsNode.make(statements)
+		)
 	}
 }
