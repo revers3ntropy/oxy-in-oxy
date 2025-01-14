@@ -32,6 +32,7 @@ export class Lexer {
 				continue
 			}
 
+		  	// make a number
 			if c.is_digit() {
 				// build a number while we can
 				let mut number = ""
@@ -49,6 +50,7 @@ export class Lexer {
 				continue
 			}
 
+			// make an identifier
 			if c.is_alphabetic() || c == '_' {
 				// build a word while we can
 				let mut word = ""
@@ -66,6 +68,34 @@ export class Lexer {
 					value: Option.some!<Str>(word),
 					loc: new Interval { start, end: self.position.clone() }
 				})
+				continue
+			}
+
+			// make a string
+			if c == '"' {
+				let str_res = self.make_string()
+				if !str_res.ok {
+					return Result.err!<List<Token>, OxyError>(str_res.error().unwrap())
+				}
+				tokens.push(str_res.unwrap())
+				continue
+			}
+
+			// make a character literal
+			if c == '\'' {
+				let char_res = self.make_char_literal()
+				if !char_res.ok {
+					return Result.err!<List<Token>, OxyError>(char_res.error().unwrap())
+				}
+				tokens.push(char_res.unwrap())
+				continue
+			}
+
+			// make a comment
+			if c == '/' && self.next_char_is('/') {
+				while self.current_char.is_some && self.current_char.unwrap() != '\n' {
+					self.advance()
+				}
 				continue
 			}
 
@@ -89,5 +119,52 @@ export class Lexer {
 
 		self.current_char = Option.some!<Char>(self.program.at_raw(self.position.idx))
 		self.next_char = self.program.at(self.position.idx + 1)
+	}
+
+	def next_char_is (self, c: Char) Bool {
+		if !self.next_char.is_some ->
+			return false
+		return self.next_char.unwrap() == c
+	}
+
+	def make_string (self) Result<Token, OxyError> {
+		let start = self.position.clone()
+		self.advance()
+		let mut string = ""
+		while self.current_char.is_some && self.current_char.unwrap() != '"' {
+			string += self.current_char.unwrap().Str()
+			self.advance()
+		}
+		if !self.current_char.is_some {
+			return Result.err!<Token, OxyError>(OxyError.syntax_err(
+				"unterminated string",
+				Interval.from_pos(start)
+			))
+		}
+		self.advance()
+		return Result.ok!<Token, OxyError>(new Token {
+			token_type: TT_STRING,
+			value: Option.some!<Str>(string),
+			loc: new Interval { start, end: self.position.clone() }
+		})
+	}
+
+	def make_char_literal (self) Result<Token, OxyError> {
+		let start = self.position.clone()
+		self.advance()
+		let c = self.current_char.unwrap()
+		self.advance()
+		if self.current_char.unwrap() != '\'' {
+			return Result.err!<Token, OxyError>(OxyError.syntax_err(
+				"unterminated character literal",
+				Interval.from_pos(start)
+			))
+		}
+		self.advance()
+		return Result.ok!<Token, OxyError>(new Token {
+			token_type: TT_CHAR,
+			value: Option.some!<Str>(c.Str()),
+			loc: new Interval { start, end: self.position.clone() }
+		})
 	}
 }

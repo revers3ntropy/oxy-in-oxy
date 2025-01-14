@@ -1,5 +1,7 @@
 export const TT_INT = 0
 export const TT_ID = 1
+export const TT_STRING = 2
+export const TT_CHAR = 3
 
 export class Token {
 	token_type: Int,
@@ -15,6 +17,8 @@ export class Token {
 	def stringify_token_type(token_type: Int) Str {
 		if token_type == TT_INT -> return "INT"
 		if token_type == TT_ID -> return "ID"
+		if token_type == TT_STRING -> return "STRING"
+		if token_type == TT_CHAR -> return "CHAR"
 		panic("Unknown token type")
 		return ""
 	}
