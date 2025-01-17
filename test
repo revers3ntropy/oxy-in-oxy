@@ -1,0 +1,10 @@
+#!/bin/bash
+
+{
+    rm ./run-tests
+    rm ./test.oxy.ll
+    rm ./a.out
+} 2> /dev/null
+
+oxy -o run-tests ./src/test.oxy
+./run-tests

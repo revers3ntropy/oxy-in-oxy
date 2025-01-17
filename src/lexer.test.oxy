@@ -1,0 +1,21 @@
+def test_lexer (tr: TestRunner) {
+	tr.it("tokenises a single integer", fn (tr: TestRunner) {
+		let program = "12"
+		let lexer_res = Lexer.lex(program, "lexer-test.oxy")
+		tr.expect_ok!<List<Token>>(lexer_res)
+		let tokens = lexer_res.unwrap()
+		tr.expect!<Int>(tokens.len()).to_be(1)
+		tr.expect!<Int>(tokens.at_raw(0).token_type).to_be(TT_INT)
+	})
+
+	tr.it("tokenises multiple integers", fn (tr: TestRunner) {
+		let program = "12 3 6789"
+		let lexer_res = Lexer.lex(program, "lexer-test.oxy")
+		tr.expect_ok!<List<Token>>(lexer_res)
+		let tokens = lexer_res.unwrap()
+		tr.expect!<Int>(tokens.len()).to_be(3)
+		tr.expect!<Int>(tokens.at_raw(0).token_type).to_be(TT_INT)
+		tr.expect!<Int>(tokens.at_raw(1).token_type).to_be(TT_INT)
+		tr.expect!<Int>(tokens.at_raw(2).token_type).to_be(TT_INT)
+	})
+}

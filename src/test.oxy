@@ -1,0 +1,109 @@
+#include "parser.oxy"
+#include "lexer.oxy"
+#include "token.oxy"
+#include "position.oxy"
+#include "error.oxy"
+#include "types.oxy"
+#include "ast/ast_node.oxy"
+#include "ast/int_node.oxy"
+#include "ast/statements_node.oxy"
+
+#include "lexer.test.oxy"
+
+class ExpectedValue <T> {
+	tr: TestRunner,
+	value: T,
+	ignore: Bool,
+
+	def to_be(self, expected: T) {
+		if self.ignore -> return
+
+		if #unchecked_cast(Int, self.value) != #unchecked_cast(Int, expected) {
+			self.tr.test_failed()
+		} else {
+			self.tr.test_passed()
+		}
+	}
+
+	def ignored <T> (tr: TestRunner) -> new ExpectedValue<T> {
+		tr,
+		value: #unchecked_cast(T, 0),
+		ignore: true
+	}
+}
+
+class TestRunner {
+
+	tests_ran: Int,
+	tests_failed: Int,
+	tests_passed: Int,
+
+	current_test_description: Str,
+	current_test_sub_description: Str,
+	current_is_passing: Bool,
+
+	def make () -> new TestRunner {
+		tests_ran: 0,
+		tests_failed: 0,
+		tests_passed: 0,
+		current_test_description: "",
+		current_test_sub_description: "",
+		current_is_passing: true
+	}
+
+	def describe(self, name: Str, cb: Fn (TestRunner) Void) {
+		print(name)
+		cb(self)
+	}
+
+	def test_failed(self) {
+		self.current_is_passing = false
+		print(" ".repeat(8) + "[failed]")
+	}
+
+	def test_passed(self) {}
+
+    def it(self, name: Str, cb: Fn (TestRunner) Void) {
+		print(" ".repeat(4) + name)
+    	self.current_test_sub_description = name
+    	self.current_is_passing = true
+    	cb(self)
+    	if self.current_is_passing {
+			self.tests_passed = self.tests_passed + 1
+		} else {
+			self.tests_failed = self.tests_failed + 1
+		}
+		self.tests_ran = self.tests_ran + 1
+    }
+
+    def expect <T> (self, value: T) ExpectedValue<T> {
+    	if !self.current_is_passing ->
+    		return ExpectedValue.ignored!<T>(self)
+		return new ExpectedValue<T> {
+			tr: self,
+			value: value,
+			ignore: false
+		}
+    }
+
+    def expect_ok <T> (self, result: Result<T, OxyError>) ExpectedValue<T> {
+    	if !self.current_is_passing ->
+			return ExpectedValue.ignored!<T>(self)
+		if !result.ok {
+			self.test_failed()
+			return ExpectedValue.ignored!<T>(self)
+		}
+		return self.expect!<T>(result.unwrap())
+	}
+
+	def finished (self) {
+		print("\nTests finished")
+		print(self.tests_passed.Str() + "/" + self.tests_ran.Str() + " passed")
+	}
+}
+
+def main() {
+	let tr = TestRunner.make()
+	tr.describe("Lexer", test_lexer)
+	tr.finished()
+}
