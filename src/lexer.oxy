@@ -99,6 +99,16 @@ export class Lexer {
 				continue
 			}
 
+			if c == '+' {
+				tokens.push(new Token {
+					token_type: TT_PLUS,
+					value: Option.none!<Str>(),
+					loc: new Interval { start, end: self.position.clone() }
+				})
+				self.advance()
+				continue
+			}
+
 			return Result.err!<List<Token>, OxyError>(OxyError.syntax_err(
 				"unexpected character",
 				Interval.from_pos(self.position.clone())

@@ -2,6 +2,38 @@ export const TT_INT = 0
 export const TT_ID = 1
 export const TT_STRING = 2
 export const TT_CHAR = 3
+export const TT_PLUS = 4
+export const TT_DASH = 5
+export const TT_ASTRIX = 6
+export const TT_F_SLASH = 7
+export const TT_OPEN_PAREN = 8
+export const TT_CLOSE_PAREN = 9
+export const TT_PERCENT = 10
+export const TT_COMMA = 11
+export const TT_DOT = 12
+export const TT_END_STATEMENT = 13
+export const TT_EQUALS = 14
+export const TT_DBL_EQUALS = 15
+export const TT_OPEN_BRACE = 16
+export const TT_CLOSE_BRACE = 17
+export const TT_OPEN_SQ_BRACKET = 18
+export const TT_CLOSE_SQ_BRACKET = 19
+export const TT_DBL_PIPE = 20
+export const TT_AMPERSAND = 21
+export const TT_DBL_AMPERSAND = 22
+export const TT_GT = 23
+export const TT_LT = 24
+export const TT_GTE = 25
+export const TT_LTE = 26
+export const TT_BANG_EQ = 27
+export const TT_COLON = 28
+export const TT_HASH = 29
+export const TT_QM = 30
+export const TT_QM_DOT = 31
+export const TT_DOUBLE_QM = 32
+export const TT_ARROW = 33
+export const TT_BANG = 34
+export const TT_BANG_DOT = 35
 
 export class Token {
 	token_type: Int,
@@ -19,6 +51,38 @@ export class Token {
 		if token_type == TT_ID -> return "ID"
 		if token_type == TT_STRING -> return "STRING"
 		if token_type == TT_CHAR -> return "CHAR"
+		if token_type == TT_PLUS -> return "+"
+		if token_type == TT_DASH -> return "-"
+		if token_type == TT_ASTRIX -> return "*"
+		if token_type == TT_F_SLASH -> return "/"
+		if token_type == TT_OPEN_PAREN -> return "("
+		if token_type == TT_CLOSE_PAREN -> return ")"
+		if token_type == TT_PERCENT -> return "%"
+		if token_type == TT_COMMA -> return ","
+		if token_type == TT_DOT -> return "."
+		if token_type == TT_END_STATEMENT -> return ";"
+		if token_type == TT_EQUALS -> return "="
+		if token_type == TT_DBL_EQUALS -> return "=="
+		if token_type == TT_OPEN_BRACE -> return "{"
+		if token_type == TT_CLOSE_BRACE -> return "}"
+		if token_type == TT_OPEN_SQ_BRACKET -> return "["
+		if token_type == TT_CLOSE_SQ_BRACKET -> return "]"
+		if token_type == TT_DBL_PIPE -> return "||"
+		if token_type == TT_AMPERSAND -> return "&"
+		if token_type == TT_DBL_AMPERSAND -> return "&&"
+		if token_type == TT_GT -> return ">"
+		if token_type == TT_LT -> return "<"
+		if token_type == TT_GTE -> return ">="
+		if token_type == TT_LTE -> return "<="
+		if token_type == TT_BANG_EQ -> return "!="
+		if token_type == TT_COLON -> return ":"
+		if token_type == TT_HASH -> return "#"
+		if token_type == TT_QM -> return "?"
+		if token_type == TT_QM_DOT -> return "?."
+		if token_type == TT_DOUBLE_QM -> return "??"
+		if token_type == TT_ARROW -> return "->"
+		if token_type == TT_BANG -> return "!"
+		if token_type == TT_BANG_DOT -> return "!."
 		panic("Unknown token type")
 		return ""
 	}
