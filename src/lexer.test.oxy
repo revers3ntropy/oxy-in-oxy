@@ -18,4 +18,11 @@ def test_lexer (tr: TestRunner) {
 		tr.expect!<Int>(tokens.at_raw(1).token_type).to_be(TT_INT)
 		tr.expect!<Int>(tokens.at_raw(2).token_type).to_be(TT_INT)
 	})
+
+	tr.it("tokenises a string", fn (tr: TestRunner) {
+		let program = "\"hi\""
+		let tokens = Lexer.lex(program, "lexer-test.oxy").unwrap()
+		tr.expect!<Int>(tokens.len()).to_be(1)
+		tr.expect!<Int>(tokens.at_raw(0).token_type).to_be(TT_STRING)
+	})
 }

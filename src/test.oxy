@@ -10,6 +10,12 @@
 
 #include "lexer.test.oxy"
 
+def main() {
+	let tr = TestRunner.make()
+	tr.describe("Lexer", test_lexer)
+	tr.finished()
+}
+
 class ExpectedValue <T> {
 	tr: TestRunner,
 	value: T,
@@ -100,10 +106,4 @@ class TestRunner {
 		print("\nTests finished")
 		print(self.tests_passed.Str() + "/" + self.tests_ran.Str() + " passed")
 	}
-}
-
-def main() {
-	let tr = TestRunner.make()
-	tr.describe("Lexer", test_lexer)
-	tr.finished()
 }
