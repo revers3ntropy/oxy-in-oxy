@@ -25,4 +25,23 @@ def test_lexer (tr: TestRunner) {
 		tr.expect!<Int>(tokens.len()).to_be(1)
 		tr.expect!<Int>(tokens.at_raw(0).token_type).to_be(TT_STRING)
 	})
+
+	tr.it("tokenises a character literal", fn (tr: TestRunner) {
+		let tokens = Lexer.lex("'a'", "lexer-test.oxy").unwrap()
+		tr.expect!<Int>(tokens.len()).to_be(1)
+		tr.expect!<Int>(tokens.at_raw(0).token_type).to_be(TT_CHAR)
+	})
+
+	tr.it("does not tokenise an invalid character literal", fn (tr: TestRunner) {
+		let lexer_res = Lexer.lex("'abc'", "lexer-test.oxy")
+		tr.expect!<Bool>(lexer_res.ok).to_be(false)
+	})
+
+	tr.it("ignores comments but does not ignore tokens before or after", fn (tr: TestRunner) {
+		let program = "12 // comment\n 'b'"
+		let tokens = Lexer.lex(program, "lexer-test.oxy").unwrap()
+		tr.expect!<Int>(tokens.len()).to_be(2)
+		tr.expect!<Int>(tokens.at_raw(0).token_type).to_be(TT_INT)
+		tr.expect!<Int>(tokens.at_raw(1).token_type).to_be(TT_CHAR)
+	})
 }
