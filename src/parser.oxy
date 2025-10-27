@@ -21,7 +21,9 @@ export class Parser {
     	}
 
 		return Result.ok!<AstNode, OxyError>(
-			StatementsNode.make(statements)
+		    RootNode.make(
+			    StatementsNode.make(statements)
+            )
 		)
 	}
 }

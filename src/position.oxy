@@ -2,13 +2,17 @@ export class Interval {
 	start: Position,
 	end: Position,
 
-	def unknown () -> new Interval {
-		start: Position.unknown(),
-		end: Position.unknown()
-	}
+	def unknown () ->
+	    new Interval {
+            start: Position.unknown(),
+            end: Position.unknown()
+        }
 
 	def from_pos (pos: Position) ->
 		new Interval { start: pos, end: pos }
+
+	def make (start: Position, end: Position) ->
+	    new Interval { start, end }
 
 	def Str (self) ->
 		"Interval(" + self.start.Str() + " -> " + self.end.Str() + ")"

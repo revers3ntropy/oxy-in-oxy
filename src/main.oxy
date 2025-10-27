@@ -7,6 +7,7 @@
 #include "ast/ast_node.oxy"
 #include "ast/int_node.oxy"
 #include "ast/statements_node.oxy"
+#include "ast/root_node.oxy"
 
 def compile (source: Str, path: Str) Result<Str, OxyError> {
 	let lex_result = Lexer.lex(source, path)

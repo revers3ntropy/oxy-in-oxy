@@ -1,0 +1,44 @@
+const NID_ROOT = 3
+
+export class RootNode {
+	program: AstNode,
+
+    def make(program: AstNode) AstNode ->
+        AstNode.from_node!<RootNode>(NID_ROOT, new RootNode { program }),
+
+    def setup(self) Result<Void, OxyError> {
+        return self.program.setup()
+    }
+
+    def type_check(self) Result<OxyType, OxyError> {
+        return self.program.type_check()
+    }
+
+    def gen_llvmir(self) Result<Str, OxyError> {
+        return "
+            ; Copied directly from the documentation
+            ; Declare the string constant as a global constant.
+            @.str = private unnamed_addr constant [13 x i8] c"hello world\0A\00"
+
+            ; External declaration of the puts function
+            declare i32 @puts(i8* nocapture) nounwind
+
+            ; Definition of main function
+            define i32 @main() { ; i32()*
+                ; Convert [13 x i8]* to i8  *...
+                %cast210 = getelementptr [13 x i8],[13 x i8]* @.str, i64 0, i64 0
+
+                ; Call puts function to write out the string to stdout.
+                call i32 @puts(i8* %cast210)
+                ret i32 0
+            }
+
+            ; Named metadata
+            !0 = !{i32 42, null, !"string"}
+            !foo = !{!0}
+        "
+    }
+
+    def Str(self) ->
+        "RootNode { statements: " + self.statements.Str() + " }"
+}
