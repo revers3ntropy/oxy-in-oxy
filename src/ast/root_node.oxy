@@ -15,10 +15,10 @@ export class RootNode {
     }
 
     def gen_llvmir(self) Result<Str, OxyError> {
-        return "
+        return Result.ok!<Str, OxyError>("
             ; Copied directly from the documentation
             ; Declare the string constant as a global constant.
-            @.str = private unnamed_addr constant [13 x i8] c"hello world\0A\00"
+            @.str = private unnamed_addr constant [13 x i8] c\"hello world\\0A\\00\"
 
             ; External declaration of the puts function
             declare i32 @puts(i8* nocapture) nounwind
@@ -34,11 +34,11 @@ export class RootNode {
             }
 
             ; Named metadata
-            !0 = !{i32 42, null, !"string"}
+            !0 = !{i32 42, null, !\"string\"}
             !foo = !{!0}
-        "
+        ")
     }
 
     def Str(self) ->
-        "RootNode { statements: " + self.statements.Str() + " }"
+        "RootNode { program: " + self.program.Str() + " }"
 }
